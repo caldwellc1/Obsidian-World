@@ -1,5 +1,4 @@
 import pandas as pd
-import numpy as np
 
 
 class World:
@@ -67,7 +66,7 @@ class World:
         else:
             return self.directions_list
 
-def value_iteration(mdp, epsilon=0.001):
+def value_iteration(mdp, epsilon=0.00001):
     U1 = mdp.reward.copy()
     D1 = {s: ' ' for s in mdp.reward}
     R, T, gamma = mdp.R, mdp.T, mdp.gamma
@@ -99,11 +98,22 @@ def getDirection(index):
     else:
         return IndexError
 
+def to_csv(utitilities, directions):
+    name = 'random_4_Cydney.csv'
+    state_list = []
+    for words in utitilities:
+        state_list.append(tuple((words, float("{0:.3f}".format(utitilities[words])), directions[words])))
+
+    df = pd.DataFrame(state_list, columns=["State", "Utility", "Policy"])
+    df.to_csv(name, index=False)
+
 
 def main():
     obsidian = World()
-    obsidian.build_world('simple_g09_r0.txt')
-    print(value_iteration(obsidian, 0.001))
+    obsidian.build_world('random_4.txt')
+    utitilities, directions = value_iteration(obsidian, 0.001)
+    to_csv(utitilities, directions)
     return
+
 if __name__ == '__main__':
     main()
